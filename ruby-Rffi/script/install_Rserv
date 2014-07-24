@@ -1,0 +1,5 @@
+#!/bin/bash
+dir=`dirname $0`
+dir=`realpath $dir`
+echo "$dir"
+ln -sf $dir/Rserv ~/bin/Rserv

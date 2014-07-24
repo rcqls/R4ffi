@@ -1,0 +1,32 @@
+#!/bin/bash
+## Rmk: IMPORTANT, $0 does not have the same name as the binary Rserve!!!
+
+pid=`ps -C Rserve -o pid=`
+
+#echo "<<$pid>>"
+
+case $1 in
+status)
+	if [ "$pid" = "" ]; then
+		echo "Rserv is NOT running!"
+	else
+		echo "Rserv is running!"
+	fi
+	;;
+start)
+	if [ "$pid" = "" ]; then
+		R CMD ${R_LIBS_USER}/Rserve/Rserve
+		##echo "Rserve started!"
+	else
+		echo "Rserve already started!"
+	fi
+	;;
+stop)
+	if [ "$pid" = "" ]; then
+		echo "Rserve already stopped!"
+	else
+		kill $pid 
+		echo "Rserve stopped!"
+	fi
+	;;
+esac

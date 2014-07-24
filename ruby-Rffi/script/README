@@ -1,0 +1,7 @@
+To install locally RServ:
+
+./install_Rserv
+
+To copy remotely:
+R_LIBS_USER=~/R/library #=> in the .bashrc!
+scp Rserv cqls@sagag7.upmf-grenoble.fr:bin:
