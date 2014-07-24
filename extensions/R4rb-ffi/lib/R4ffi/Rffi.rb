@@ -5,7 +5,7 @@ ENV["R_HOME"]=`R RHOME`.strip.split("\n").select{|l| l=~/^\//}[0] unless `R RHOM
 
 module Rffi
 	extend FFI::Library
-	ffi_lib "/Users/remy/devel/ruby/R4rb-ffi/Rffi/build/lib/libRffi.dylib"
+	ffi_lib ENV["R4FFI_LIB"] || "/Users/remy/devel/ruby/R4rb-ffi/Rffi/build/lib/libRffi"]
 	attach_function :rffi_init, [:pointer], :int
 	attach_function :rffi_eval, [:pointer,:int], :void
 	attach_function :rffi_get_ary, [:pointer,:pointer,:pointer], :pointer
