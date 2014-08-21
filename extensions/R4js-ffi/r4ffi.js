@@ -15,6 +15,9 @@ var rffi=ffi.Library(process.env["R4FFI_LIB"] || "/Users/remy/devel/R4ffi/build/
 	"rffi_as_double_ary":[doubleAry,[voidPtr]],
 	"rffi_as_int_ary":[intAry,[voidPtr]],
 	"rffi_set_ary":["void",["string","pointer","int","int"]],
+	"rffi_set_int_ary":["void",["string",intAry,"int"]],
+	"rffi_set_double_ary":["void",["string",doubleAry,"int"]],
+	"rffi_set_logical_ary":["void",["string",intAry,"int"]]
 })
 
 var intPtr=ref.refType(ref.types.int);
@@ -71,13 +74,48 @@ var get_ary=function(cmd) {
 	return(res2);
 }
 
-var set_ary=function(expr,arr) {
-		var type = 1;
-		var pArr = new intAry(arr);
-		var len = arr.length;
-		var res=rffi.rffi_set_ary(".rubyExport",pArr,type,len);
-		exec(expr+"<-.rubyExport");
+
+
+var isInt=function(x) {
+        return (typeof x === 'number') && (x % 1 === 0);
 }
+
+var isIntAry=function(arr) {
+        return arr.length === arr.filter(isInt).length ;
+}
+
+// var isBoolAry=function(arr) {
+// 	return arr.map(function(x) {return typeof(x)=='boolean';}).every(function(x) {return x===true;});
+// }
+
+var isBoolAry=function(arr) {
+	return arr.length === arr.filter(function(x) {return (typeof x === 'boolean');}).length ;
+}
+
+var isDoubleAry=function(arr) {
+        return arr.length === arr.filter(function(x) {return (typeof x === 'number');}).length ;
+}
+
+var set_ary=function(expr,arr) {
+	var type = -1,pArr;
+
+	if(isIntAry(arr)) {
+		type=1;
+		pArr = (new intAry(arr)).buffer;
+	} else if(isBoolAry(arr)) {
+		type=2;
+		pArr = (new intAry(arr)).buffer;
+	} else if(isDoubleAry(arr)) {
+		type=0;
+		pArr = (new doubleAry(arr)).buffer;
+	}
+	if(type>=0) {
+		var len = arr.length;
+		rffi.rffi_set_ary(".rubyExport",pArr,type,len);
+		exec(expr+"<-.rubyExport");
+	}
+}
+
 
 exports.init=init;
 exports.eval=eval;

@@ -61,7 +61,7 @@ module Rffi
 			arr.map!{|e| e ? 1 : 0}
 			pArr.put_array_of_int32(0, arr)
 		end
-		res=Rffi::rffi_set_ary(".rubyExport",pArr,type,len)
+		Rffi::rffi_set_ary(".rubyExport",pArr,type,len)
 		Rffi.exec(expr+"<-.rubyExport")
 	end
 

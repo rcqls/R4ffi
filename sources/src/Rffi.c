@@ -51,12 +51,13 @@ extern uintptr_t R_CStackStart; /* Initial stack address */
 
 int rffi_init(char* arg) //(int argc,char* argv[])
 {
-  char* argv[1];
-  argv[0]=arg;
-  printf("arg=%s\n",arg);
+  char* argv[4];
+  argv[0]="REmbed";
+  argv[1]="--save";
+  argv[2]="--slave";
+  argv[3]="--quiet";
   R_CStackStart = (uintptr_t)-1;
-  Rf_initEmbeddedR(1,argv);
-  printf("arg=%s\n",arg);
+  Rf_initEmbeddedR(4,argv);
   R_Interactive = FALSE;
   return 1;
 }
@@ -216,6 +217,23 @@ SEXP util_C2SEXP(void* arr,int type,int n) {
 
 void rffi_set_ary(char* name,void* arr,int type,int len) {
   SEXP ans=util_C2SEXP(arr,type,len);
+  defineVar(install(name),ans,R_GlobalEnv);
+}
+
+//because of node-ffi!
+
+void rffi_set_int_ary(char* name,int* arr,int len) {
+  SEXP ans=util_C2SEXP((void*)arr,1,len);
+  defineVar(install(name),ans,R_GlobalEnv);
+}
+
+void rffi_set_double_ary(char* name,double* arr,int len) {
+  SEXP ans=util_C2SEXP((void*)arr,0,len);
+  defineVar(install(name),ans,R_GlobalEnv);
+}
+
+void rffi_set_logical_ary(char* name,int* arr,int len) {
+  SEXP ans=util_C2SEXP((void*)arr,2,len);
   defineVar(install(name),ans,R_GlobalEnv);
 }
 
