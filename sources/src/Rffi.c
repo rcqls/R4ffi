@@ -151,8 +151,7 @@ void* util_SEXP2C(SEXP ans,int* type,int* len) {
 }
 
 // 
-void* rffi_get_ary(char* cmd,int* type,int* len)
-{
+void* rffi_get_ary(char* cmd,int* type,int* len) {
   int  errorOccurred,status, i;
     
   SEXP text, expr, ans; //=R_NilValue /* -Wall */;
@@ -186,6 +185,38 @@ double* rffi_as_double_ary(void* res) {
 
 int* rffi_as_int_ary(void* res) {
    return (int*)res;
+}
+
+SEXP util_C2SEXP(void* arr,int type,int n) {
+  SEXP ans;
+  int i; 
+  
+  if(type==0) {
+    PROTECT(ans=allocVector(REALSXP,n));
+    for(i=0;i<n;i++) {
+      REAL(ans)[i]=((double*)arr)[i];
+    }
+    UNPROTECT(1);
+  } else if(type==1) {
+    PROTECT(ans=allocVector(INTSXP,n));
+    for(i=0;i<n;i++) {
+      INTEGER(ans)[i]=((int*)arr)[i];
+    }
+    UNPROTECT(1);
+  } else if(type==2) {
+    PROTECT(ans=allocVector(LGLSXP,n));
+    for(i=0;i<n;i++) {
+      LOGICAL(ans)[i]=((int*)arr)[i];
+    }
+    UNPROTECT(1);
+  } else ans=R_NilValue;
+
+  return ans; 
+}
+
+void rffi_set_ary(char* name,void* arr,int type,int len) {
+  SEXP ans=util_C2SEXP(arr,type,len);
+  defineVar(install(name),ans,R_GlobalEnv);
 }
 
 // double* rffi_get_double(char* cmd,int* len) {

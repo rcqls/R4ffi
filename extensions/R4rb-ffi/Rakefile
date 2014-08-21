@@ -13,7 +13,7 @@ PKG_FILES=FileList[
 
 spec = Gem::Specification.new do |s|
     s.platform = Gem::Platform::RUBY
-    s.summary = "R for ruby"
+    s.summary = "R for ruby via ffi"
     s.name = PKG_NAME
     s.version = PKG_VERSION
     s.requirements << 'none'
@@ -28,7 +28,7 @@ spec = Gem::Specification.new do |s|
     s.rubyforge_project = nil
 end
 
-PKGDIR=File.expand_path("..")
+PKGDIR=File.expand_path("~/devel/R4ffi/pkg")
 
 
 ## this allows to produce some parameter for task like  Gem::PackageTask (without additional argument!)

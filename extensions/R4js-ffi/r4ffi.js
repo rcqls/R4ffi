@@ -8,12 +8,13 @@ var doubleAry=RefArray("double");
 //var VoidArray=RefArray("void");
 var intAry=RefArray("int");
 
-var rffi=ffi.Library("librffi",{
+var rffi=ffi.Library(process.env["R4FFI_LIB"] || "/Users/remy/devel/R4ffi/build/lib/libRffi.dylib",{
 	"rffi_init":["int",["string"]],
 	"rffi_eval":["int",["string","int"]],
 	"rffi_get_ary":[voidPtr,["string",intPtr,intPtr]],
 	"rffi_as_double_ary":[doubleAry,[voidPtr]],
-	"rffi_as_int_ary":[intAry,[voidPtr]]
+	"rffi_as_int_ary":[intAry,[voidPtr]],
+	"rffi_set_ary":["void",["string","pointer","int","int"]],
 })
 
 var intPtr=ref.refType(ref.types.int);
@@ -70,7 +71,16 @@ var get_ary=function(cmd) {
 	return(res2);
 }
 
+var set_ary=function(expr,arr) {
+		var type = 1;
+		var pArr = new intAry(arr);
+		var len = arr.length;
+		var res=rffi.rffi_set_ary(".rubyExport",pArr,type,len);
+		exec(expr+"<-.rubyExport");
+}
+
 exports.init=init;
 exports.eval=eval;
 exports.exec=exec;
 exports.get_ary=get_ary;
+exports.set_ary=set_ary;

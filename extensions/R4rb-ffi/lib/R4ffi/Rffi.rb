@@ -5,12 +5,14 @@ ENV["R_HOME"]=`R RHOME`.strip.split("\n").select{|l| l=~/^\//}[0] unless `R RHOM
 
 module Rffi
 	extend FFI::Library
-	ffi_lib ENV["R4FFI_LIB"] || "/Users/remy/devel/ruby/R4rb-ffi/Rffi/build/lib/libRffi"]
+	ffi_lib ENV["R4FFI_LIB"] || "/Users/remy/devel/R4ffi/build/lib/libRffi.dylib"
 	attach_function :rffi_init, [:pointer], :int
 	attach_function :rffi_eval, [:pointer,:int], :void
 	attach_function :rffi_get_ary, [:pointer,:pointer,:pointer], :pointer
+	attach_function :rffi_set_ary, [:string,:pointer,:int,:int], :void
 
 	CMD = FFI::MemoryPointer.from_string("--save")
+
 	def Rffi.init
 		Rffi::rffi_init(CMD)
 	end
@@ -25,7 +27,7 @@ module Rffi
 		Rffi::rffi_eval(cmdN,0)
 	end
 
-	def Rffi.eval_get_ary(cmd)
+	def Rffi.get_ary(cmd)
 		cmdN=FFI::MemoryPointer.from_string(cmd)
 		type = FFI::MemoryPointer.new(:int)
 		len = FFI::MemoryPointer.new(:int)
@@ -41,5 +43,28 @@ module Rffi
 			res.read_array_of_int(len).map{|e| e==0 ? false : true}
 		end
 	end
+
+	def Rffi.set_ary(expr,arr)
+		type,tArr=1,:int
+		type,tArr=0,:double if arr.map{|e| e.class==Float}.any?
+		type,tArr=2,:int if arr.map{|e| [TrueClass,FalseClass].include? e.class}.all?
+		
+		len = arr.length
+
+		pArr = FFI::MemoryPointer.new(tArr, len)
+		case type
+		when 0
+			pArr.put_array_of_double(0, arr)
+		when 1
+			pArr.put_array_of_int32(0, arr)
+		when 2
+			arr.map!{|e| e ? 1 : 0}
+			pArr.put_array_of_int32(0, arr)
+		end
+		res=Rffi::rffi_set_ary(".rubyExport",pArr,type,len)
+		Rffi.exec(expr+"<-.rubyExport")
+	end
+
+
 
 end

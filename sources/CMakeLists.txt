@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 2.6)
 
 #Configuration du projet
 project(Rffi)
+
+set(R_INCLUDE_DIR "default value" CACHE PATH "dir containing R.h")
+set(R_LIB_DIR "default value" CACHE PATH "dir containing libR.{so|dll|dylib}")
 set(LIBRARY_OUTPUT_PATH lib/${CMAKE_BUILD_TYPE})
 
 #Inclusion des en-têtes publics
