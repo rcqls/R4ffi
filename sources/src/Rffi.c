@@ -198,6 +198,10 @@ int* rffi_as_int_ary(void* res) {
    return (int*)res;
 }
 
+char** rffi_as_string_ary(void* res) {
+   return (char**)res;
+}
+
 SEXP util_C2SEXP(void* arr,int type,int n) {
   SEXP ans;
   int i; 

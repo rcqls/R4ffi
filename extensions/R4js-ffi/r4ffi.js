@@ -7,6 +7,7 @@ var voidPtr=ref.refType("void");
 var doubleAry=RefArray("double");
 //var VoidArray=RefArray("void");
 var intAry=RefArray("int");
+var stringAry=RefArray("string");
 
 var rffi=ffi.Library(process.env["R4FFI_LIB"] || "/Users/remy/devel/R4ffi/build/lib/libRffi.dylib",{
 	"rffi_init":["int",["string"]],
@@ -14,6 +15,7 @@ var rffi=ffi.Library(process.env["R4FFI_LIB"] || "/Users/remy/devel/R4ffi/build/
 	"rffi_get_ary":[voidPtr,["string",intPtr,intPtr]],
 	"rffi_as_double_ary":[doubleAry,[voidPtr]],
 	"rffi_as_int_ary":[intAry,[voidPtr]],
+	"rffi_as_string_ary":[stringAry,[voidPtr]],
 	"rffi_set_ary":["void",["string","pointer","int","int"]]
 })
 
@@ -67,8 +69,9 @@ var get_ary=function(cmd) {
 	 	case 2:
 	 		res2=rffi.rffi_as_int_ary(res);
 	 		break
-	 	//case 3:
-	 	//	break
+	 	case 3:
+	 		res2=rffi.rffi_as_string_ary(res);
+	 		break
 	}
 	res2.length=l;
 	return(res2);
@@ -96,6 +99,12 @@ var isDoubleAry=function(arr) {
         return arr.length === arr.filter(function(x) {return (typeof x === 'number');}).length ;
 }
 
+var isStringAry=function(arr) {
+        return arr.length === arr.filter(function(x) {return (typeof x === 'string');}).length ;
+}
+
+
+
 var set_ary=function(expr,arr) {
 	var type = -1,pArr;
 
@@ -108,6 +117,9 @@ var set_ary=function(expr,arr) {
 	} else if(isDoubleAry(arr)) {
 		type=0;
 		pArr = (new doubleAry(arr)).buffer;
+	} else if(isStringAry(arr)) {
+		type=3;
+		pArr = (new stringAry(arr)).buffer;
 	}
 	if(type>=0) {
 		var len = arr.length;
@@ -116,9 +128,26 @@ var set_ary=function(expr,arr) {
 	}
 }
 
+if(true) {
+	init()
+	eval("a=rnorm(10)")
+	console.log(get_ary("a"))
+	console.log(get_ary("as.integer(1:3)"))
+	console.log(get_ary("c('titi','tutu2')"))
+	set_ary("a",[1,3,2])
+	eval("a")
+	set_ary("a",[1.1,3.2,2.3])
+	eval("a")
+	set_ary("a",[true,false,true])
+	eval("a")
+	set_ary("a",["tutu","toto2"])
+	eval("a")
+} else {
 
-exports.init=init;
-exports.eval=eval;
-exports.exec=exec;
-exports.get_ary=get_ary;
-exports.set_ary=set_ary;
+	exports.init=init;
+	exports.eval=eval;
+	exports.exec=exec;
+	exports.get_ary=get_ary;
+	exports.set_ary=set_ary;
+
+}
