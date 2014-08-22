@@ -59,6 +59,7 @@ int rffi_init(char* arg) //(int argc,char* argv[])
   R_CStackStart = (uintptr_t)-1;
   Rf_initEmbeddedR(4,argv);
   R_Interactive = FALSE;
+  printf("rffi init\n");
   return 1;
 }
 
@@ -76,6 +77,7 @@ int rffi_eval(char* cmds, int print)
   nbCmds=1;
 
   //printf("nbCmds : %d\n",nbCmds);
+  printf("%s\n",cmds);
 
   text = PROTECT(allocVector(STRSXP, nbCmds));
   for (i = 0 ; i < nbCmds ; i++) {
@@ -220,64 +222,6 @@ void rffi_set_ary(char* name,void* arr,int type,int len) {
   defineVar(install(name),ans,R_GlobalEnv);
 }
 
-//because of node-ffi!
-
-void rffi_set_int_ary(char* name,int* arr,int len) {
-  SEXP ans=util_C2SEXP((void*)arr,1,len);
-  defineVar(install(name),ans,R_GlobalEnv);
-}
-
-void rffi_set_double_ary(char* name,double* arr,int len) {
-  SEXP ans=util_C2SEXP((void*)arr,0,len);
-  defineVar(install(name),ans,R_GlobalEnv);
-}
-
-void rffi_set_logical_ary(char* name,int* arr,int len) {
-  SEXP ans=util_C2SEXP((void*)arr,2,len);
-  defineVar(install(name),ans,R_GlobalEnv);
-}
-
-// double* rffi_get_double(char* cmd,int* len) {
-//    int type;
-//    void* res=rffi_get_ary(cmd,&type,len);
-//    return rffi_as_double_ary(res);
-// }
-
-// int* rffi_get_int(char* cmd,int* len) {
-//    int type;
-//    void* res=rffi_get_ary(cmd,&type,len);
-//    return rffi_as_int_ary(res);
-// }
-
-// double* rffi_get_double(char* cmd,int* len)
-// {
-//   int  errorOccurred,status, i;
-    
-//   SEXP text, expr, ans; //=R_NilValue /* -Wall */;
-
-//   text = PROTECT(allocVector(STRSXP, 1)); 
-// //printf("cmd: %s\n",cmdString);
-//   SET_STRING_ELT(text, 0, mkChar(cmd));
-//   expr = PROTECT(RR_ParseVector(text, -1, &status));
-//   if (status != PARSE_OK) {
-//     printf("Parsing error in: %s\n",cmd);
-//     UNPROTECT(2);
-//     return (double*)NULL;
-//   }
-//   /* Note that expr becomes an EXPRSXP and hence we need the loop
-//      below (a straight eval(expr, R_GlobalEnv) won't work) */
-//   ans = R_tryEval(VECTOR_ELT(expr, 0),R_GlobalEnv,&errorOccurred);
-//   if(errorOccurred) {
-//     //fflush(stderr);
-//     printf("Exec error in: %s\n",cmd);
-//     UNPROTECT(2);
-//     return (double*)NULL;
-//   }
-//   UNPROTECT(2);
-//   //printf("eval_get\n");
-//   *len=length(ans);
-//   return REAL(ans);
-// }
 
 // /***************** PARSE **********************/
 

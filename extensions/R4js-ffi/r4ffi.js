@@ -14,10 +14,7 @@ var rffi=ffi.Library(process.env["R4FFI_LIB"] || "/Users/remy/devel/R4ffi/build/
 	"rffi_get_ary":[voidPtr,["string",intPtr,intPtr]],
 	"rffi_as_double_ary":[doubleAry,[voidPtr]],
 	"rffi_as_int_ary":[intAry,[voidPtr]],
-	"rffi_set_ary":["void",["string","pointer","int","int"]],
-	"rffi_set_int_ary":["void",["string",intAry,"int"]],
-	"rffi_set_double_ary":["void",["string",doubleAry,"int"]],
-	"rffi_set_logical_ary":["void",["string",intAry,"int"]]
+	"rffi_set_ary":["void",["string","pointer","int","int"]]
 })
 
 var intPtr=ref.refType(ref.types.int);
