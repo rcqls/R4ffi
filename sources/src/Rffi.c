@@ -48,19 +48,24 @@ extern Rboolean R_Interactive;
 extern uintptr_t R_CStackLimit; /* C stack limit */
 extern uintptr_t R_CStackStart; /* Initial stack address */
 //extern int Rf_initEmbeddedR(int argc, char *argv[]);
+static int rffi_initialized=0;
 
 int rffi_init(char* arg) //(int argc,char* argv[])
 {
-  char* argv[4];
-  argv[0]="REmbed";
-  argv[1]="--save";
-  argv[2]="--slave";
-  argv[3]="--quiet";
-  R_CStackStart = (uintptr_t)-1;
-  Rf_initEmbeddedR(4,argv);
-  R_Interactive = FALSE;
-  printf("rffi init\n");
-  return 1;
+  if(!rffi_initialized) {
+    char* argv[4];
+    argv[0]="REmbed";
+    argv[1]="--save";
+    argv[2]="--slave";
+    argv[3]="--quiet";
+    printf("arg=%s\n",arg);
+    R_CStackStart = (uintptr_t)-1;
+    Rf_initEmbeddedR(4,argv);
+    R_Interactive = FALSE;
+    printf("rffi init\n");
+    rffi_initialized=1;
+    return 1;
+  } else return 0;
 }
 
 /***************** EVAL **********************/
@@ -133,11 +138,14 @@ void* util_SEXP2C(SEXP ans,int* type,int* len) {
     *type=2;
     res=(void*)(INTEGER(ans));
     break;
-  // case STRSXP:
-  //   for(i=0;i<n;i++) {
-  //     rb_ary_store(res,i,rb_str_new2(CHAR(STRING_ELT(ans,i))));
-  //   }
-  //   break;
+  case STRSXP:
+    *type=3;
+    char** resC=malloc((*len) * sizeof(char*));
+    for(int i=0;i<(*len);i++) {
+      resC[i]=(char *)CHAR(STRING_ELT(ans,i));
+    }
+    res=(void*)resC;
+    break;
   // case CPLXSXP:
   //   rb_require("complex");
   //   for(i=0;i<n;i++) {
@@ -210,6 +218,14 @@ SEXP util_C2SEXP(void* arr,int type,int n) {
     PROTECT(ans=allocVector(LGLSXP,n));
     for(i=0;i<n;i++) {
       LOGICAL(ans)[i]=((int*)arr)[i];
+    }
+    UNPROTECT(1);
+  } else if(type==3) {
+    PROTECT(ans=allocVector(STRSXP,n));
+    for(i=0;i<n;i++) {
+      char* str=((char**)arr)[i];
+      //printf("[%d]=%s|\n",i,str);
+      SET_STRING_ELT(ans,i,mkCharCE(str,CE_UTF8));
     }
     UNPROTECT(1);
   } else ans=R_NilValue;

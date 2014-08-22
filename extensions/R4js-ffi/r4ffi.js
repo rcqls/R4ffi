@@ -64,8 +64,11 @@ var get_ary=function(cmd) {
 		case 1:
 			res2=rffi.rffi_as_int_ary(res);
 			break
-	// 	case 2:
-	// 		//res.read_array_of_int(len).map{|e| e==0 ? false : true}
+	 	case 2:
+	 		res2=rffi.rffi_as_int_ary(res);
+	 		break
+	 	//case 3:
+	 	//	break
 	}
 	res2.length=l;
 	return(res2);
