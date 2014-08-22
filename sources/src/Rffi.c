@@ -77,7 +77,7 @@ int rffi_eval(char* cmds, int print)
   nbCmds=1;
 
   //printf("nbCmds : %d\n",nbCmds);
-  printf("%s\n",cmds);
+  //printf("%s\n",cmds);
 
   text = PROTECT(allocVector(STRSXP, nbCmds));
   for (i = 0 ; i < nbCmds ; i++) {
