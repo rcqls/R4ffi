@@ -74,11 +74,13 @@ var get_ary=function(cmd) {
 	 		break
 	}
 	res2.length=l;
+	//slowBuffer to Array
 	res=[]
 	for(var i = 0; i < l; i++){
 		res[i] = res2[i];
-	    if(t==2) res[i] = (res[i]===1 ? true : false);
 	}
+	//map to boolean
+	if(t==2) res=res.map(function(x) {return x===1 ? true : false});
 	return(res);
 }
 
