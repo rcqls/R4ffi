@@ -74,7 +74,12 @@ var get_ary=function(cmd) {
 	 		break
 	}
 	res2.length=l;
-	return(res2);
+	res=[]
+	for(var i = 0; i < l; i++){
+		res[i] = res2[i];
+	    if(t==2) res[i] = (res[i]===1 ? true : false);
+	}
+	return(res);
 }
 
 
@@ -134,6 +139,7 @@ if(true) {
 	console.log(get_ary("a"))
 	console.log(get_ary("as.integer(1:3)"))
 	console.log(get_ary("c('titi','tutu2')"))
+	console.log(get_ary("c(TRUE,FALSE,TRUE)"))
 	set_ary("a",[1,3,2])
 	eval("a")
 	set_ary("a",[1.1,3.2,2.3])
