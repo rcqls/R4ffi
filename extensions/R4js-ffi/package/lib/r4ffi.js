@@ -135,27 +135,9 @@ var set_ary=function(expr,arr) {
 	}
 }
 
-if(true) {
-	init()
-	eval("a=rnorm(10)")
-	console.log(get_ary("a"))
-	console.log(get_ary("as.integer(1:3)"))
-	console.log(get_ary("c('titi','tutu2')"))
-	console.log(get_ary("c(TRUE,FALSE,TRUE)"))
-	set_ary("a",[1,3,2])
-	eval("a")
-	set_ary("a",[1.1,3.2,2.3])
-	eval("a")
-	set_ary("a",[true,false,true])
-	eval("a")
-	set_ary("a",["tutu","toto2"])
-	eval("a")
-} else {
 
-	exports.init=init;
-	exports.eval=eval;
-	exports.exec=exec;
-	exports.get_ary=get_ary;
-	exports.set_ary=set_ary;
-
-}
+exports.init=init;
+exports.eval=eval;
+exports.exec=exec;
+exports.get_ary=get_ary;
+exports.set_ary=set_ary;

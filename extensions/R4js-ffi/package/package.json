@@ -1,0 +1,19 @@
+{
+  "author": "R Cqls",
+  "name": "r4ffi",
+  "description": "Launch R inside node.js using ffi",
+  "version": "0.1.0",
+  "repository": {
+    "url": ""
+  },
+  "main": "./lib/r4ffi",
+  "keywords": [
+    "R",
+    "ffi"
+  ],
+  "bin": {},
+  "dependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
